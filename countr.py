@@ -22,7 +22,7 @@ def create_count():
 @app.route('/counts/<count_id>', methods=['GET'])
 def get_count(count_id):
     if count_id in counts:
-        response = make_response(str(counts[count_id]))
+        response = make_response(str(counts[count_id]) + '\n')
         response.content_type = 'text/plain'
         return response
     return ("Not Found", 404)

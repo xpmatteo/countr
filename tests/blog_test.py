@@ -33,7 +33,7 @@ class BlogTest(unittest.TestCase):
         response = self.app.get('/counts/1234')
         self.assertEqual(200, response.status_code)
         self.assertEqual('text/plain', response.content_type)
-        self.assertEqual(b'9', response.data)
+        self.assertEqual(b'9\n', response.data)
 
     def test_increment_count(self):
         countr.counts['1234'] = 4
