@@ -14,12 +14,12 @@ class BlogTest(unittest.TestCase):
 
     def test_get_root(self):
         response = self.app.get('/')
-        self.assertEqual(200, response.status_code)
-        assert b'No counts defined' in response.data
+        self.assertEqual(302, response.status_code)
+        self.assertEqual('http://localhost/counts/', response.headers['location'])
 
     def test_create_count(self):
         countr.random.seed(1)
-        response = self.app.post('/counts')
+        response = self.app.post('/counts/')
         self.assertEqual(302, response.status_code)
         self.assertEqual('http://localhost/counts/144272509', response.headers['location'])
         self.assertEqual(0, countr.counts['144272509'])

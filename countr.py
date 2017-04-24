@@ -7,9 +7,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def show_counts():
-    return 'No counts defined'
+    return redirect(url_for('all_counts'))
 
-@app.route('/counts', methods=['POST'])
+@app.route('/counts/', methods=['GET'])
+def all_counts():
+    return 'x'
+
+@app.route('/counts/', methods=['POST'])
 def create_count():
     count_id = str(random.randint(0, 1000*1000*1000))
     counts[count_id] = 0
