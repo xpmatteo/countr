@@ -1,4 +1,4 @@
-from flask import Flask, redirect, make_response
+from flask import Flask, redirect, request, make_response, url_for
 from random import Random
 
 random = Random()
@@ -21,6 +21,13 @@ def get_count(count_id):
         response = make_response(str(counts[count_id]))
         response.content_type = 'text/plain'
         return response
+    return ("Not Found", 404)
+
+@app.route('/counts/<count_id>', methods=['POST'])
+def change_count(count_id):
+    if count_id in counts:
+        counts[count_id] = counts[count_id] + int(request.form.get('increment', 1))
+        return redirect(url_for('get_count', count_id=count_id))
     return ("Not Found", 404)
 
 if __name__ == '__main__':

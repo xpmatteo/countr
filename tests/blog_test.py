@@ -8,6 +8,7 @@ from context import countr
 class BlogTest(unittest.TestCase):
 
     def setUp(self):
+        countr.counts = {}
         self.app = countr.app.test_client()
 
     def test_get_root(self):
@@ -32,6 +33,13 @@ class BlogTest(unittest.TestCase):
         self.assertEqual('200 OK', response.status)
         self.assertEqual('text/plain', response.content_type)
         self.assertEqual(b'9', response.data)
+
+    def test_increment_count(self):
+        countr.counts['1234'] = 4
+        response = self.app.post('/counts/1234', data=dict(increment=3))
+        self.assertEqual('302 found', response.status.lower())
+        self.assertEqual('http://localhost/counts/1234', response.headers['location'])
+        self.assertEqual(7, countr.counts['1234'])
 
 
 if __name__ == '__main__':
