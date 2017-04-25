@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% set title = 'Count ' + count_id %}
+{% block content %}
+  <p id='{{count_id}}' class='count_value'>{{ count_value }}</p>
+
+  <form action='{{ url_for('get_count', count_id=count_id) }}' method='post'>
+    <p><label for="increment">Amount: </label><input type="text" name="increment" value="1" id="amount"></p>
+    <p><input type="submit" value="Increment" </p>
+  </form>
+
+  <p><a href='..'>All counts</a></p>
+{% endblock %}

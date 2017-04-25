@@ -1,12 +1,16 @@
-{% if not counts %}
-  <p>No counts defined</p>
-{% else %}
-  <ul>
-    {% for count in counts: %}
-      <li><a href='/counts/{{count}}'>{{ count }}: {{ counts[count] }}</a></li>
-    {% endfor %}
-  </ul>
-{% endif %}
-<form action='/counts/' method='post'>
-  <input type="submit" value="Create a new count">
-</form>
+{% extends "layout.html" %}
+{% set title = 'All' %}
+{% block content %}
+  {% if not counts %}
+    <p>No counts defined</p>
+  {% else %}
+    <ul>
+      {% for count in counts: %}
+        <li><a href='/counts/{{count}}'>{{ count }}: {{ counts[count] }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <form action='/counts/' method='post'>
+    <input type="submit" value="Create a new count">
+  </form>
+{% endblock %}
