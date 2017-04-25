@@ -1,0 +1,12 @@
+{% if not counts %}
+  <p>No counts defined</p>
+{% else %}
+  <ul>
+    {% for count in counts: %}
+      <li>{{ count }}: {{ counts[count] }} </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+<form action='/counts/' method='post'>
+  <input type="submit" value="Create a new count">
+</form>

@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, make_response, url_for
+from flask import Flask, redirect, request, make_response, url_for, render_template
 from random import Random
 
 random = Random()
@@ -11,7 +11,7 @@ def show_counts():
 
 @app.route('/counts/', methods=['GET'])
 def all_counts():
-    return 'x'
+    return render_template('all_counts.html', counts=counts)
 
 @app.route('/counts/', methods=['POST'])
 def create_count():

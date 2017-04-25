@@ -17,6 +17,19 @@ class BlogTest(unittest.TestCase):
         self.assertEqual(302, response.status_code)
         self.assertEqual('http://localhost/counts/', response.headers['location'])
 
+    def test_all_counts_none_defined(self):
+        response = self.app.get('/counts/')
+        self.assertEqual(200, response.status_code)
+        assert b'No counts defined' in response.data
+
+    def test_all_counts(self):
+        countr.counts['111'] = 1
+        countr.counts['222'] = 2
+        response = self.app.get('/counts/')
+        self.assertEqual(200, response.status_code)
+        assert b'111: 1' in response.data
+        assert b'222: 2' in response.data
+
     def test_create_count(self):
         countr.random.seed(1)
         response = self.app.post('/counts/')
@@ -41,6 +54,13 @@ class BlogTest(unittest.TestCase):
         self.assertEqual(302, response.status_code)
         self.assertEqual('http://localhost/counts/1234', response.headers['location'])
         self.assertEqual(7, countr.counts['1234'])
+
+    def test_increment_count_default_increment_value(self):
+        countr.counts['1234'] = 10
+        response = self.app.post('/counts/1234')
+        self.assertEqual(302, response.status_code)
+        self.assertEqual('http://localhost/counts/1234', response.headers['location'])
+        self.assertEqual(11, countr.counts['1234'])
 
 
 if __name__ == '__main__':
