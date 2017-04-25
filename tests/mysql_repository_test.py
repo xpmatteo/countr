@@ -105,6 +105,11 @@ class MysqlRepositoryTest(unittest.TestCase):
         self.repository['11'] = 12
         self.assertEqual(set(['9','11']), set([x for x in self.repository]))
 
+    def test_connection_is_committed(self):
+        self.repository['9'] = 10
+        other_repo = MysqlCountRepository()
+        self.assertEqual(10, other_repo['9'])
+
 
 if __name__ == '__main__':
     unittest.main()
