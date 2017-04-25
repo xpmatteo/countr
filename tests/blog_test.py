@@ -1,6 +1,5 @@
 #!/usr/local/bin/python3
 
-import os
 import unittest
 import context
 import countr
