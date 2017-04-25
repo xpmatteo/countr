@@ -22,6 +22,7 @@ class MysqlCountRepository:
             cursor.execute('update counts set value = %s where id = %s', (value, key))
         else:
             cursor.execute('insert into counts (id, value) values (%s,%s)', (key, value))
+        cursor.connection.commit()
 
     def __contains__(self, key):
         return self._do_getitem(key)
@@ -72,8 +73,6 @@ class MysqlRepositoryTest(unittest.TestCase):
             )
         cursor =connection.cursor()
         cursor.execute('truncate table counts')
-        cursor.execute("insert into counts (id, value) values ('123', 999)")
-        connection.commit()
         connection.close()
 
         self.repository = MysqlCountRepository()
@@ -104,7 +103,7 @@ class MysqlRepositoryTest(unittest.TestCase):
     def test_iterate(self):
         self.repository['9'] = 10
         self.repository['11'] = 12
-        self.assertEqual(set(['9','11','123']), set([x for x in self.repository]))
+        self.assertEqual(set(['9','11']), set([x for x in self.repository]))
 
 
 if __name__ == '__main__':
