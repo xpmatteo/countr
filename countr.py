@@ -32,5 +32,3 @@ def change_count(count_id):
         return redirect(url_for('get_count', count_id=count_id))
     return ("Not Found", 404)
 
-if __name__ == '__main__':
-    app.run()

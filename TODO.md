@@ -1,4 +1,3 @@
 
-- root redirects to /counts ?
+- use the builtin python html.parser instead of BeautifulSoup
 
-- counts/ same as counts
