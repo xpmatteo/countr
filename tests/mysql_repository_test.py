@@ -8,7 +8,7 @@ import pymysql
 
 class MysqlCountRepository:
     def __init__(self):
-        self._cursor = None
+        self._connection = None
 
     def __getitem__(self, key):
         result = self._do_getitem(key)
@@ -17,43 +17,38 @@ class MysqlCountRepository:
         return result['value']
 
     def __setitem__(self, key, value):
-        cursor = self._get_cursor()
-        if key in self:
-            cursor.execute('update counts set value = %s where id = %s', (value, key))
-        else:
-            cursor.execute('insert into counts (id, value) values (%s,%s)', (key, value))
-        cursor.connection.commit()
+        with self._get_cursor() as cursor:
+            if key in self:
+                cursor.execute('update counts set value = %s where id = %s', (value, key))
+            else:
+                cursor.execute('insert into counts (id, value) values (%s,%s)', (key, value))
 
     def __contains__(self, key):
         return self._do_getitem(key)
 
     def __iter__(self):
-        cursor = self._get_cursor()
-        cursor.execute('select * from counts')
-        rows = cursor.fetchall()
-        for row in rows:
-            yield row['id']
+        with self._get_cursor() as cursor:
+            cursor.execute('select * from counts')
+            rows = cursor.fetchall()
+            for row in rows:
+                yield row['id']
 
     def _do_getitem(self, key):
-        cursor = self._get_cursor()
-        cursor.execute('select value from counts where id = %s', (key))
-        return cursor.fetchone()
+        with self._get_cursor() as cursor:
+            cursor.execute('select value from counts where id = %s', (key))
+            return cursor.fetchone()
 
     def _get_cursor(self):
-        if not self._cursor:
-            connection = pymysql.connect(
+        if not self._connection:
+            self._connection = pymysql.connect(
                 db=os.environ['MYSQL_DATABASE_DB'],
                 host=os.environ['MYSQL_DATABASE_HOST'],
                 user=os.environ['MYSQL_DATABASE_USER'],
                 password=os.environ['MYSQL_DATABASE_PASSWORD'],
-                cursorclass=pymysql.cursors.DictCursor
+                cursorclass=pymysql.cursors.DictCursor,
+                autocommit=True
                 )
-            self._cursor = connection.cursor()
-        return self._cursor
-
-    def close(self):
-        self._cursor.close()
-        self._cursor = None
+        return self._connection.cursor()
 
 
 class MysqlRepositoryTest(unittest.TestCase):
