@@ -18,6 +18,13 @@ class MysqlCountRepository:
             raise KeyError
         return result['value']
 
+    def __setitem__(self, key, value):
+        cursor = self._get_cursor()
+        if key in self:
+            cursor.execute('update counts set value = %s where id = %s', (value, key))
+        else:
+            cursor.execute('insert into counts (id, value) values (%s,%s)', (key, value))
+
     def __contains__(self, key):
         cursor = self._get_cursor()
         cursor.execute('select value from counts where id = %s', (key))
@@ -57,7 +64,7 @@ class MysqlRepositoryTest(unittest.TestCase):
         cursor.execute("insert into counts (id, value) values ('123', 999)")
         connection.commit()
         connection.close()
-        
+
         self.repository = MysqlCountRepository()
 
     def test_read_one_counter(self):
@@ -71,6 +78,16 @@ class MysqlRepositoryTest(unittest.TestCase):
     def test_non_existent_counter(self):
         with self.assertRaises(KeyError):
             self.repository['2222']
+
+    def test_create_counter(self):
+        self.repository['111'] = 222
+        self.assertTrue('111' in self.repository)
+        self.assertEqual(222, self.repository['111'])
+
+    def test_update_counter(self):
+        self.repository['9'] = 10
+        self.repository['9'] = 11
+        self.assertEqual(11, self.repository['9'])
 
 
 if __name__ == '__main__':
