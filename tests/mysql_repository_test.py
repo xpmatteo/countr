@@ -7,20 +7,35 @@ import countr
 import pymysql
 
 class MysqlCountRepository:
+    def __init__(self):
+        self._cursor = None
+
     def __getitem__(self, key):
-        connection = pymysql.connect(
-            db=os.environ['MYSQL_DATABASE_DB'],
-            host=os.environ['MYSQL_DATABASE_HOST'],
-            user=os.environ['MYSQL_DATABASE_USER'],
-            password=os.environ['MYSQL_DATABASE_PASSWORD'],
-            cursorclass=pymysql.cursors.DictCursor
-            )
-        cursor = connection.cursor()
+        cursor = self._get_cursor()
         cursor.execute('select value from counts where id = %s', (key))
         result = cursor.fetchone()
         if not result:
             raise KeyError
         return result['value']
+
+    def __contains__(self, key):
+        cursor = self._get_cursor()
+        cursor.execute('select value from counts where id = %s', (key))
+        result = cursor.fetchone()
+        return result
+
+    def _get_cursor(self):
+        if not self._cursor:
+            connection = pymysql.connect(
+                db=os.environ['MYSQL_DATABASE_DB'],
+                host=os.environ['MYSQL_DATABASE_HOST'],
+                user=os.environ['MYSQL_DATABASE_USER'],
+                password=os.environ['MYSQL_DATABASE_PASSWORD'],
+                cursorclass=pymysql.cursors.DictCursor
+                )
+            self._cursor = connection.cursor()
+        return self._cursor
+
 
 class MysqlRepositoryTest(unittest.TestCase):
 
@@ -60,6 +75,13 @@ class MysqlRepositoryTest(unittest.TestCase):
         self.cursor.execute("insert into counts (id, value) values ('123', 999)")
         self.connection.commit()
         self.assertEqual(999, self.repository['123'])
+        self.assertTrue(999, self.repository['123'])
+
+    def test_count_exists_test(self):
+        self.cursor.execute("insert into counts (id, value) values ('123', 999)")
+        self.connection.commit()
+        self.assertTrue('123' in self.repository)
+        self.assertFalse('222' in self.repository)
 
     def test_non_existent_counter(self):
         with self.assertRaises(KeyError):
