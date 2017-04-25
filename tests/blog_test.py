@@ -30,8 +30,6 @@ class BlogTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         html = html_parse(response.data, "html.parser")
         self.assertEqual(['111: 1', '222: 2'], [x.get_text() for x in html.find_all('li')])
-        assert b'111: 1' in response.data
-        assert b'222: 2' in response.data
 
     def test_create_count(self):
         countr.random.seed(1)
