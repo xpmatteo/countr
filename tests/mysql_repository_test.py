@@ -8,16 +8,19 @@ import pymysql
 
 class MysqlCountRepository:
     def __getitem__(self, key):
-        self.connection = pymysql.connect(
+        connection = pymysql.connect(
             db=os.environ['MYSQL_DATABASE_DB'],
             host=os.environ['MYSQL_DATABASE_HOST'],
             user=os.environ['MYSQL_DATABASE_USER'],
             password=os.environ['MYSQL_DATABASE_PASSWORD'],
             cursorclass=pymysql.cursors.DictCursor
             )
-        self.cursor = self.connection.cursor()
-        self.cursor.execute('select value from counts where id = %s', (key))
-        return self.cursor.fetchone()['value']
+        cursor = connection.cursor()
+        cursor.execute('select value from counts where id = %s', (key))
+        result = cursor.fetchone()
+        if not result:
+            raise KeyError
+        return result['value']
 
 class MysqlRepositoryTest(unittest.TestCase):
 
@@ -58,9 +61,9 @@ class MysqlRepositoryTest(unittest.TestCase):
         self.connection.commit()
         self.assertEqual(999, self.repository['123'])
 
-    def xtest_non_existent_counter(self):
-        with self.assertRaises(KeyError) as context:
-            self.repository['456']
+    def test_non_existent_counter(self):
+        with self.assertRaises(KeyError):
+            self.repository['2222']
 
 
 if __name__ == '__main__':
