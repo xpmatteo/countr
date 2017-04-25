@@ -3,7 +3,6 @@
 import os
 import unittest
 import context
-import countr
 import pymysql
 
 class MysqlCountRepository:
@@ -101,9 +100,9 @@ class MysqlRepositoryTest(unittest.TestCase):
         self.assertEqual(set(['9','11']), set([x for x in self.repository]))
 
     def test_connection_is_committed(self):
-        self.repository['9'] = 10
+        self.repository['pippo'] = 10
         other_repo = MysqlCountRepository()
-        self.assertEqual(10, other_repo['9'])
+        self.assertEqual(10, other_repo['pippo'])
 
 
 if __name__ == '__main__':
