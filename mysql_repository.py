@@ -1,11 +1,9 @@
 
 import os
 import pymysql
+from flask import g
 
 class MysqlCountRepository:
-    def __init__(self):
-        self._connection = None
-
     def __getitem__(self, key):
         result = self._do_getitem(key)
         if not result:
@@ -35,8 +33,9 @@ class MysqlCountRepository:
             return cursor.fetchone()
 
     def _get_cursor(self):
-        if not self._connection:
-            self._connection = pymysql.connect(
+        connection = getattr(g, '_connection', None)
+        if connection is None:
+            connection = g._connection = pymysql.connect(
                 db=os.environ['MYSQL_DATABASE_DB'],
                 host=os.environ['MYSQL_DATABASE_HOST'],
                 user=os.environ['MYSQL_DATABASE_USER'],
@@ -44,5 +43,5 @@ class MysqlCountRepository:
                 cursorclass=pymysql.cursors.DictCursor,
                 autocommit=True
                 )
-        return self._connection.cursor()
+        return g._connection.cursor()
 
