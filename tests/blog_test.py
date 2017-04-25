@@ -4,6 +4,7 @@ import os
 import unittest
 import context
 import countr
+from bs4 import BeautifulSoup as html_parse
 
 class BlogTest(unittest.TestCase):
 
@@ -27,6 +28,8 @@ class BlogTest(unittest.TestCase):
         countr.counts['222'] = 2
         response = self.app.get('/counts/')
         self.assertEqual(200, response.status_code)
+        html = html_parse(response.data, "html.parser")
+        self.assertEqual(['111: 1', '222: 2'], [x.get_text().strip() for x in html.find_all('li')])
         assert b'111: 1' in response.data
         assert b'222: 2' in response.data
 

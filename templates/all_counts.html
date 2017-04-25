@@ -3,7 +3,7 @@
 {% else %}
   <ul>
     {% for count in counts: %}
-      <li>{{ count }}: {{ counts[count] }} </li>
+      <li><a href='/counts/{{count}}'>{{ count }}: {{ counts[count] }}</a></li>
     {% endfor %}
   </ul>
 {% endif %}
