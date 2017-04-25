@@ -11,9 +11,7 @@ class MysqlCountRepository:
         self._cursor = None
 
     def __getitem__(self, key):
-        cursor = self._get_cursor()
-        cursor.execute('select value from counts where id = %s', (key))
-        result = cursor.fetchone()
+        result = self._do_getitem(key)
         if not result:
             raise KeyError
         return result['value']
@@ -26,10 +24,12 @@ class MysqlCountRepository:
             cursor.execute('insert into counts (id, value) values (%s,%s)', (key, value))
 
     def __contains__(self, key):
+        return self._do_getitem(key)
+
+    def _do_getitem(self, key):
         cursor = self._get_cursor()
         cursor.execute('select value from counts where id = %s', (key))
-        result = cursor.fetchone()
-        return result
+        return cursor.fetchone()
 
     def _get_cursor(self):
         if not self._cursor:
@@ -88,6 +88,12 @@ class MysqlRepositoryTest(unittest.TestCase):
         self.repository['9'] = 10
         self.repository['9'] = 11
         self.assertEqual(11, self.repository['9'])
+
+    def test_iterate(self):
+        self.repository['9'] = 10
+        self.repository['11'] = 12
+        # for count in self.repository:
+        #     pass
 
 
 if __name__ == '__main__':
