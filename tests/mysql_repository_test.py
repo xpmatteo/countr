@@ -26,6 +26,13 @@ class MysqlCountRepository:
     def __contains__(self, key):
         return self._do_getitem(key)
 
+    def __iter__(self):
+        cursor = self._get_cursor()
+        cursor.execute('select * from counts')
+        rows = cursor.fetchall()
+        for row in rows:
+            yield row['id']
+
     def _do_getitem(self, key):
         cursor = self._get_cursor()
         cursor.execute('select value from counts where id = %s', (key))
@@ -42,6 +49,10 @@ class MysqlCountRepository:
                 )
             self._cursor = connection.cursor()
         return self._cursor
+
+    def close(self):
+        self._cursor.close()
+        self._cursor = None
 
 
 class MysqlRepositoryTest(unittest.TestCase):
@@ -68,10 +79,11 @@ class MysqlRepositoryTest(unittest.TestCase):
         self.repository = MysqlCountRepository()
 
     def test_read_one_counter(self):
+        self.repository['123'] = 999
         self.assertEqual(999, self.repository['123'])
-        self.assertTrue(999, self.repository['123'])
 
     def test_count_exists_test(self):
+        self.repository['123'] = 999
         self.assertTrue('123' in self.repository)
         self.assertFalse('222' in self.repository)
 
@@ -92,8 +104,7 @@ class MysqlRepositoryTest(unittest.TestCase):
     def test_iterate(self):
         self.repository['9'] = 10
         self.repository['11'] = 12
-        # for count in self.repository:
-        #     pass
+        self.assertEqual(set(['9','11','123']), set([x for x in self.repository]))
 
 
 if __name__ == '__main__':
