@@ -1,9 +1,9 @@
-from flask import Flask, redirect, request, make_response, url_for, render_template
+from flask import Flask, redirect, request, make_response, url_for, render_template, g
 from random import Random
 from mysql_repository import MysqlCountRepository
 
 random = Random()
-counts = MysqlCountRepository()
+counts = MysqlCountRepository(g)
 app = Flask(__name__)
 
 @app.route('/')
