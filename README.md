@@ -22,7 +22,7 @@ See it running with
     script/run-local.sh
     open http://localhost:5000/
 
-Run the unit test with
+Run unit tests with
 
     pytest
 
