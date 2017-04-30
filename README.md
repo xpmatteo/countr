@@ -30,3 +30,19 @@ Run individual test with
 
     python tests/(filename)
 
+## Docker stuff
+
+Prepare the requirements.txt file with
+
+    pip install pipreqs
+    pipreqs . --force
+
+Build docker container: (-t is for tagging the image)
+
+    docker build -t countr:latest .
+
+Run with docker: (-i -t is for being able to kill it with ^C)
+
+    docker run -i -t -p 5000:5000 countr:latest
+
+
