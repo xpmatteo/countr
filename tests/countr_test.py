@@ -5,7 +5,7 @@ import context
 import countr
 from bs4 import BeautifulSoup as html_parse
 
-class BlogTest(unittest.TestCase):
+class CountrTest(unittest.TestCase):
 
     def setUp(self):
         countr.counts = {}
