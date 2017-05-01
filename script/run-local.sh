@@ -4,10 +4,11 @@ set -e
 cd $(dirname $0)/..
 
 
-export MYSQL_DATABASE_DB=countr_dev
-export MYSQL_DATABASE_HOST=localhost
-export MYSQL_DATABASE_USER=countr
-export MYSQL_DATABASE_PASSWORD=countr
+export RDS_DB_NAME=countr_dev
+export RDS_HOSTNAME=localhost
+export RDS_PORT=3306
+export RDS_USERNAME=countr
+export RDS_PASSWORD=countr
 
 export FLASK_APP=countr.py
 export FLASK_DEBUG=1

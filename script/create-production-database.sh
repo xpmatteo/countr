@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-# define key information
-dbname="countr_prod"
+dbname="ebdb"
 dbuser="countr"
-dbpassword="cheigiyoo2Ooghee"
-dbhost="countr-prod.csfpyzhrgihs.eu-west-1.rds.amazonaws.com"
+dbpassword=$AWS_COUNTR1_PROD_RDS_PASSWORD
+dbhost="aa1fj35qzere6j9.csfpyzhrgihs.eu-west-1.rds.amazonaws.com"
 
 set -e
 cd "$(dirname "$0")/.."

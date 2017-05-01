@@ -38,10 +38,11 @@ class MysqlCountRepository:
         connection = getattr(self.thread_locals, '_connection', None)
         if connection is None:
             connection = self.thread_locals._connection = pymysql.connect(
-                db=os.environ['MYSQL_DATABASE_DB'],
-                host=os.environ['MYSQL_DATABASE_HOST'],
-                user=os.environ['MYSQL_DATABASE_USER'],
-                password=os.environ['MYSQL_DATABASE_PASSWORD'],
+                db=os.environ['RDS_DB_NAME'],
+                port=int(os.environ['RDS_PORT']),
+                host=os.environ['RDS_HOSTNAME'],
+                user=os.environ['RDS_USERNAME'],
+                password=os.environ['RDS_PASSWORD'],
                 cursorclass=pymysql.cursors.DictCursor,
                 autocommit=True
                 )

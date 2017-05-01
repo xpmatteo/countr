@@ -12,16 +12,17 @@ class FakeAppGlobals:
 class MysqlRepositoryTest(unittest.TestCase):
 
     def setUp(self):
-        os.environ['MYSQL_DATABASE_DB'] = 'countr_test'
-        os.environ['MYSQL_DATABASE_HOST'] = 'localhost'
-        os.environ['MYSQL_DATABASE_USER'] = 'countr'
-        os.environ['MYSQL_DATABASE_PASSWORD'] = 'countr'
+        os.environ['RDS_DB_NAME'] = 'countr_test'
+        os.environ['RDS_HOSTNAME'] = 'localhost'
+        os.environ['RDS_PORT'] = '3306'
+        os.environ['RDS_USERNAME'] = 'countr'
+        os.environ['RDS_PASSWORD'] = 'countr'
 
         connection = pymysql.connect(
-            db=os.environ['MYSQL_DATABASE_DB'],
-            host=os.environ['MYSQL_DATABASE_HOST'],
-            user=os.environ['MYSQL_DATABASE_USER'],
-            password=os.environ['MYSQL_DATABASE_PASSWORD'],
+            db=os.environ['RDS_DB_NAME'],
+            host=os.environ['RDS_HOSTNAME'],
+            user=os.environ['RDS_USERNAME'],
+            password=os.environ['RDS_PASSWORD'],
             cursorclass=pymysql.cursors.DictCursor
             )
         cursor =connection.cursor()
