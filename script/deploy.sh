@@ -34,4 +34,4 @@ cd "$(dirname "$0")/.."
 
 require_clean_work_tree
 
-eb deploy -r eu-west-1 countr1-prod
+eb deploy $*
