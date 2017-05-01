@@ -9,7 +9,12 @@ Install Python dependencies with
 
     pip install flask
     pip install pymysql
-    pup install bs4       # for tests only
+
+    # for tests only
+    pip install bs4
+
+    # for eb deployments
+    pip install --upgrade awsebcli
 
 Prepare the (local) databases with
 
@@ -44,5 +49,12 @@ Build docker container: (-t is for tagging the image)
 Run with docker: (-i -t is for being able to kill it with ^C)
 
     docker run -i -t -p 5000:5000 countr:latest
+
+## Deploying to Elastic Beanstalk
+
+Assuming you created an EB app and env, you can deploy to them with
+
+    script/deploy.sh
+
 
 

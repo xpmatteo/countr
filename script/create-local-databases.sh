@@ -31,9 +31,5 @@ echo "grant all on $dbname_dev.*  to '$dbuser'@localhost identified by '$dbpassw
 echo "grant all on $dbname_test.* to '$dbuser'@localhost identified by '$dbpassword';" \
      | mysql -uroot $MYSQL_ROOT_PASSWORD
 
-
-cat sql/???_*.sql | mysql -u$dbuser "-p$dbpassword" $dbname_dev
-cat sql/???_*.sql | mysql -u$dbuser "-p$dbpassword" $dbname_test
-
 echo "$dbname_dev created"
 echo "$dbname_test created"

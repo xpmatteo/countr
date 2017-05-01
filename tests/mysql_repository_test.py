@@ -26,6 +26,12 @@ class MysqlRepositoryTest(unittest.TestCase):
             cursorclass=pymysql.cursors.DictCursor
             )
         cursor =connection.cursor()
+
+        cursor.execute('SET sql_notes = 0')
+        with open('sql/001_create_counts.sql', 'r') as sql_file:
+            cursor.execute(sql_file.read());
+        cursor.execute('SET sql_notes = 1')
+
         cursor.execute('truncate table counts')
         connection.close()
 

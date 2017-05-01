@@ -6,6 +6,7 @@ random = Random()
 counts = MysqlCountRepository(g)
 app = Flask(__name__)
 
+
 @app.route('/')
 def show_counts():
     return redirect(url_for('all_counts'))

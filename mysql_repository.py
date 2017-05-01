@@ -5,6 +5,7 @@ import pymysql
 class MysqlCountRepository:
     def __init__(self, thread_locals):
         self.thread_locals = thread_locals
+        self._must_load_schema = True
 
     def __getitem__(self, key):
         result = self._do_getitem(key)
@@ -34,6 +35,12 @@ class MysqlCountRepository:
             cursor.execute('select value from counts where id = %s', (key))
             return cursor.fetchone()
 
+    def _load_schema(self, cursor):
+        cursor.execute('SET sql_notes = 0')
+        with open('sql/001_create_counts.sql', 'r') as sql_file:
+            cursor.execute(sql_file.read());
+        cursor.execute('SET sql_notes = 1')
+
     def _get_cursor(self):
         connection = getattr(self.thread_locals, '_connection', None)
         if connection is None:
@@ -46,5 +53,8 @@ class MysqlCountRepository:
                 cursorclass=pymysql.cursors.DictCursor,
                 autocommit=True
                 )
-        return self.thread_locals._connection.cursor()
-
+        cursor = self.thread_locals._connection.cursor()
+        if self._must_load_schema:
+            self._must_load_schema = False
+            self._load_schema(cursor)
+        return cursor
